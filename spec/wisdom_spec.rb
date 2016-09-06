@@ -16,4 +16,8 @@ RSpec.describe Wisdom do
     expect(@wisdom.authors).to eq("Armand Joulin, Edouard Grave, Piotr Bojanowski, Tomas Mikolov")
   end
 
+  it "extracts the abstract from a pdf paper" do
+    expect(@wisdom.abstract[0..28]).to eq("In this work, we explore ways")
+
+  end
 end
