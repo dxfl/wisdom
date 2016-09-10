@@ -7,8 +7,7 @@ RSpec.describe Wisdom do
     @wisdom.process
   end
   
-  it "extracts the title from a pdf paper" do
-    
+  it "extracts the title from a pdf paper" do    
     expect(@wisdom.title).to eq("Bag of Tricks for Efﬁcient Text Classiﬁcation")
   end
 
@@ -18,6 +17,11 @@ RSpec.describe Wisdom do
 
   it "extracts the abstract from a pdf paper" do
     expect(@wisdom.abstract[0..28]).to eq("In this work, we explore ways")
-
   end
+
+  it "extracts the title even if it's not the first sentence"
+
+  it "gets the first 3000 characters if cannot find the abstract"
+
+  it "adds a log to each pdf to remember how the extraction went"
 end
