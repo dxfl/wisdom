@@ -7,11 +7,11 @@ RSpec.describe Wisdom do
     @wisdom.process
   end
   
-  it "extracts the title from a pdf paper" do    
+  xit "extracts the title from a pdf paper" do    
     expect(@wisdom.title).to eq("Bag of Tricks for Efﬁcient Text Classiﬁcation")
   end
 
-  it "extracts the authors from a pdf paper" do
+  xit "extracts the authors from a pdf paper" do
     expect(@wisdom.authors).to eq("Armand Joulin, Edouard Grave, Piotr Bojanowski, Tomas Mikolov")
   end
 
@@ -24,4 +24,8 @@ RSpec.describe Wisdom do
   it "gets the first 3000 characters if cannot find the abstract"
 
   it "adds a log to each pdf to remember how the extraction went"
+
+  it "gets the name of the file" do
+    expect(@wisdom.filename).to eq("mikolov.pdf")
+  end
 end
