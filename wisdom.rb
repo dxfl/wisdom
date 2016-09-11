@@ -29,13 +29,14 @@ class Wisdom
   
   def get_abstract text
     if text[/(?<=Abstract).*/m]
-      abstract = text[/(?<=Abstract).*/m]
+      abstract = text[/(?<=Abstract).*/m].gsub(/ {2,99}/, " ").strip
       if abstract[/.*(?<=Introduction)/m]
         abstract = abstract[/.*(?<=Introduction)/m].sub(/1 + Introduction/, "").gsub(/ {2,99}/, " ").strip
       end
     else
       abstract = text.gsub(/\n+/, "\n").gsub(/ +/, " ").strip
     end
+    abstract
   end
 
   
