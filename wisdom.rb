@@ -28,9 +28,14 @@ class Wisdom
   end
   
   def get_abstract text
-    text[/(?<=Abstract).*/m][/.*(?<=Introduction)/m].sub(/1 + Introduction/, "").gsub(/ {2,99}/, " ").strip
-  rescue
-    text.gsub(/\n+/, "\n").gsub(/ +/, " ").strip
+    if text[/(?<=Abstract).*/m]
+      abstract = text[/(?<=Abstract).*/m]
+      if abstract[/.*(?<=Introduction)/m]
+        abstract = abstract[/.*(?<=Introduction)/m].sub(/1 + Introduction/, "").gsub(/ {2,99}/, " ").strip
+      end
+    else
+      abstract = text.gsub(/\n+/, "\n").gsub(/ +/, " ").strip
+    end
   end
 
   
