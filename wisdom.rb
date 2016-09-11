@@ -3,7 +3,7 @@ require "pdf-reader"
 
 class Wisdom
 
-  attr_reader :title, :authors, :abstract
+  attr_reader :title, :authors, :abstract, :filename
   
   def initialize filename
     @filename = filename
@@ -15,16 +15,30 @@ class Wisdom
   end
 
   def get_info page0
-    info = page0.text[0..500].split("\n") # the info use to be in the first
-    @title = info[0].lstrip #title is first sentence
-    @authors = info[5].lstrip.gsub(/ {2,99}/, ", ") # authors the 5th item
-    @abstract = page0.text[0..3000][/(?<=Abstract).*/m][/.*(?<=Introduction)/m].sub(/1 + Introduction/, "").gsub(/ {2,99}/, " ").lstrip
+    #info = page0.text[0..500].split(/\n+/).map(&:strip) # the info use to be in the first
+    @title = get_title page0
+    @authors = "unknown"
+    @abstract = get_abstract page0.text[0..3000]
   end
+
+  def get_title page0
+    page0.text[0..500].gsub(/\n+/, "\n").gsub(/ +/, " ").strip
+  rescue
+    page0.text[0..200].gsub(/\n+/, "\n").gsub(/ +/, " ").strip
+  end
+  
+  def get_abstract text
+    text[/(?<=Abstract).*/m][/.*(?<=Introduction)/m].sub(/1 + Introduction/, "").gsub(/ {2,99}/, " ").strip
+  rescue
+    text.gsub(/\n+/, "\n").gsub(/ +/, " ").strip
+  end
+
   
 end
 
-#  w = Wisdom.new("mikolov.pdf")
-#  w.process
-#  puts w.title
-#  puts w.authors
 
+# w = Wisdom.new("mikolov.pdf")
+# w.process
+# puts w.title
+# puts w.authors
+# puts w.abstract
