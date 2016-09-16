@@ -1,3 +1,4 @@
+# extracts info from PDF papers
 
 require "pdf-reader"
 
