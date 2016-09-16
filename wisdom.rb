@@ -46,9 +46,3 @@ class Wisdom
   
 end
 
-
-# w = Wisdom.new("mikolov.pdf")
-# w.process
-# puts w.title
-# puts w.authors
-# puts w.abstract
