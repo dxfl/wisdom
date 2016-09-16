@@ -11,13 +11,13 @@ class Wisdom
 
   def get_reader
     PDF::Reader.new(@filename)
-  rescue PDF::Reader::MalformedPDFError
-    "PDF file is empty"
+  rescue => exception
+    exception.message
   end
   
   def process
     reader = get_reader
-    reader.class == PDF::Reader ? get_info(reader.pages[0]) : @title = "PDF_Error"
+    reader.class == PDF::Reader ? get_info(reader.pages[0]) : @title = "PDF_Error: #{reader}"
   end
 
   def get_info page0
