@@ -12,10 +12,11 @@ class Wisdom
   def process
     reader = PDF::Reader.new(@filename)
     get_info reader.pages[0]
+  rescue
+    @title = "PDF_Error"
   end
 
   def get_info page0
-    #info = page0.text[0..500].split(/\n+/).map(&:strip) # the info use to be in the first
     @title = get_title page0
     @authors = "unknown"
     @abstract = get_abstract page0.text[0..3000]
@@ -38,7 +39,6 @@ class Wisdom
     end
     abstract
   end
-
   
 end
 
