@@ -2,7 +2,7 @@
 
 require "pdf-reader"
 
-class Wisdom
+class PDFInterface
 
   attr_reader :title, :authors, :abstract, :filename, :body
   
