@@ -4,7 +4,7 @@ require "pdf-reader"
 
 class Wisdom
 
-  attr_reader :title, :authors, :abstract, :filename
+  attr_reader :title, :authors, :abstract, :filename, :body
   
   def initialize filename
     @filename = filename
@@ -18,13 +18,15 @@ class Wisdom
   
   def process
     reader = get_reader
-    reader.class == PDF::Reader ? get_info(reader.pages[0]) : @title = "PDF_Error: #{reader}"
+    reader.class == PDF::Reader ? get_info(reader.pages) : @title = "PDF_Error: #{reader}"
   end
 
-  def get_info page0
+  def get_info pages
+    page0 = pages[0]
     @title = get_title page0
     @authors = "unknown"
     @abstract = get_abstract page0.text[0..3000]
+    @body = get_body pages
   end
 
   def get_title page0
@@ -44,6 +46,9 @@ class Wisdom
     end
     abstract
   end
-  
+
+  def get_body pages
+    pages.map{ |pag| pag.text }.reduce{ |sum, val| sum + val }
+  end
 end
 
