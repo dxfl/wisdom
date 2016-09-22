@@ -19,6 +19,9 @@ RSpec.describe Wisdom do
     expect(@wisdom.abstract[0..28]).to eq("In this work, we explore ways")
   end
 
+  it "extracts the body" do
+    expect(@wisdom.body[-32..-1]).to eq("A comparison of event models for")
+  end
   it "extracts the title even if it's not the first sentence"
 
   it "gets the first 3000 characters if cannot find the abstract"
