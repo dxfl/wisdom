@@ -1,5 +1,5 @@
 # coding: utf-8
-require_relative '../wisdom'
+require_relative '../lib/wisdom'
 
 RSpec.describe Wisdom do
   before(:each) do
