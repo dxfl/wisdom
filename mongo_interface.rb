@@ -9,8 +9,8 @@ class MongoInterface
   end
 
   def connectMongo
-    client = Mongo::Client.new(['127.0.0.1'])
-    db = client[@dbname]
+    client = Mongo::Client.new(['127.0.0.1'], :database => @dbname)
+    db = client.database
     db[@collectionname]
   end
 
