@@ -1,10 +1,9 @@
 # coding: utf-8
-#require_relative '../lib/pdf_interface'
 require 'pdf_interface'
 
 RSpec.describe PDFInterface do
   before(:each) do
-    @pdf = PDFInterface.new("mikolov.pdf")
+    @pdf = PDFInterface.new("spec/data/mikolov.pdf")
     @pdf.process
   end
   
@@ -23,6 +22,7 @@ RSpec.describe PDFInterface do
   it "extracts the body" do
     expect(@pdf.body[-32..-1]).to eq("A comparison of event models for")
   end
+
   it "extracts the title even if it's not the first sentence"
 
   it "gets the first 3000 characters if cannot find the abstract"
@@ -30,6 +30,6 @@ RSpec.describe PDFInterface do
   it "adds a log to each pdf to remember how the extraction went"
 
   it "gets the name of the file" do
-    expect(@pdf.filename).to eq("mikolov.pdf")
+    expect(@pdf.filename).to eq("spec/data/mikolov.pdf")
   end
 end
