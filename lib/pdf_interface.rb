@@ -49,6 +49,8 @@ class PDFInterface
 
   def get_body pages
     pages.map{ |pag| pag.text }.reduce{ |sum, val| sum + val }
+  rescue => exception
+    "PDF_Error: #{exception.message}"
   end
 end
 
