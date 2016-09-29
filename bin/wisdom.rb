@@ -65,6 +65,10 @@ def process
                 authors: pdf.authors,
                 abstract: pdf.abstract,
                 body: pdf.body}]
+      posts_size= posts.map{ |_, value| value.size }.reduce(:+)
+      if posts_size >= MongoInterface::MaxBSONSize
+        max_size = MongoInterface::MaxBSONSize - post_size - pdf.body.size - 1
+        posts[:body] = pdf.body[0..max_size]
       mongo.save posts
       LOG.info "Processed paper: #{pdf.filename}"
     end
