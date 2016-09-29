@@ -20,11 +20,18 @@ EOF
   opts.on("-d", "--directory DIRECTORY", 'indicate main pdf directory') do |dir|
     options[:directory] = dir
   end
+
+  #collection name
+  options[:collection] = "arxiv" #default name
+  opts.on("-c", "--collection COLLECTION", 'indicate mongo collection name') do |coll|
+    options[:collection] = coll
+  end
 end
 
 option_parse.parse!
 
 MAIN_DIR = options[:directory]
+COLLECTION_NAME = options[:collection]
 
 LOG = Logger.new($stderr)
 LOG.level = Logger.const_get(ENV.fetch("LOG_LEVEL", "INFO"))
@@ -45,7 +52,7 @@ def get_files folder
 end
 
 def process
-  mongo = MongoInterface.new("arxiv", "test")
+  mongo = MongoInterface.new("arxiv", COLLECTION_NAME)
   pdf_directories = get_directories MAIN_DIR
   pdf_directories.each do |dir|
     path = MAIN_DIR + dir + "/"
