@@ -2,6 +2,8 @@ require 'mongo'
 
 class MongoInterface
 
+  MaxBSONSize = 16777216
+    
   def initialize(dbname, collectionname)
     @dbname = dbname
     @collectionname = collectionname
