@@ -51,6 +51,18 @@ def get_files folder
   delete_dots Dir.entries(folder)
 end
 
+def chack_posts posts
+  posts_size= posts.map{ |_, value| value.size }.reduce(:+)
+  if posts_size >= MongoInterface::MaxBSONSize
+    max_size = MongoInterface::MaxBSONSize - post_size + posts[:body].size - 1
+    posts[:body] = posts[:body][0..max_size]
+  end
+  posts
+rescue => exception
+  posts[:body] = "PDF_Error: #{exception.message}"
+  posts
+end
+
 def process
   mongo = MongoInterface.new("arxiv", COLLECTION_NAME)
   pdf_directories = get_directories MAIN_DIR
@@ -65,11 +77,7 @@ def process
                 authors: pdf.authors,
                 abstract: pdf.abstract,
                 body: pdf.body}]
-      posts_size= posts.map{ |_, value| value.size }.reduce(:+)
-      if posts_size >= MongoInterface::MaxBSONSize
-        max_size = MongoInterface::MaxBSONSize - post_size - pdf.body.size - 1
-        posts[:body] = pdf.body[0..max_size]
-      end
+      check_posts posts
       mongo.save posts
       LOG.info "Processed paper: #{pdf.filename}"
     end
