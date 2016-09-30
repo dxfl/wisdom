@@ -51,16 +51,16 @@ def get_files folder
   delete_dots Dir.entries(folder)
 end
 
-def check_posts posts
-  posts_size= posts.map{ |_, value| value.size }.reduce(:+)
-  if posts_size >= MongoInterface::MaxBSONSize
-    max_size = MongoInterface::MaxBSONSize - post_size + posts[:body].size - 1
-    posts[:body] = posts[:body][0..max_size]
+def check_post post
+  post_size= post.map{ |_, value| value.size }.reduce(:+)
+  if post_size >= MongoInterface::MaxBSONSize
+    max_size = MongoInterface::MaxBSONSize - post_size + post[:body].size - 1
+    post[:body] = post[:body][0..max_size]
   end
-  posts
+  post
 rescue => exception
-  posts[:body] = "PDF_Error: #{exception.message}"
-  posts
+  post[:body] = "PDF_Error: #{exception.message}"
+  post
 end
 
 def process
@@ -72,12 +72,13 @@ def process
     pdf_files.each do |file|
       pdf = PDFInterface.new(path + file)
       pdf.process
-      posts = [{filename: file, #pdf.filename includes path
+      posts = {filename: file, #pdf.filename includes path
                 title: pdf.title,
                 authors: pdf.authors,
                 abstract: pdf.abstract,
-                body: pdf.body}]
-      check_posts posts
+                body: pdf.body}
+      check_post post
+      posts = [post]
       mongo.save posts
       LOG.info "Processed paper: #{pdf.filename}"
     end
