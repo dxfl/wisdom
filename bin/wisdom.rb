@@ -51,7 +51,7 @@ def get_files folder
   delete_dots Dir.entries(folder)
 end
 
-def check_posts post
+def check_post post
   post_size= post.map{ |_, value| value.size }.reduce(:+)
   if post_size >= MongoInterface::MaxBSONSize
     max_size = MongoInterface::MaxBSONSize - post_size + post[:body].size - 1
