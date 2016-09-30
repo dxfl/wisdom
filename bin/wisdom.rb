@@ -72,7 +72,7 @@ def process
     pdf_files.each do |file|
       pdf = PDFInterface.new(path + file)
       pdf.process
-      posts = {filename: file, #pdf.filename includes path
+      post = {filename: file, #pdf.filename includes path
                 title: pdf.title,
                 authors: pdf.authors,
                 abstract: pdf.abstract,
