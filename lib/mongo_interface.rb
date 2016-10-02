@@ -20,4 +20,7 @@ class MongoInterface
     @collection.insert_many posts
   end
 
+  def get_all_docs_by field
+    @collection.find.map{ |doc| doc[field]}
+  end
 end
