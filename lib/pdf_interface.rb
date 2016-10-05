@@ -27,9 +27,9 @@ class PDFInterface
 
   def get_info pages
     page0 = pages[0]
-    @title = get_title page0
+    @title = with_error_handling{ get_title(page0) }
     @authors = "unknown"
-    @abstract = get_abstract page0.text[0..3000]
+    @abstract = with_error_handling{ get_abstract page0.text[0..3000] }
     @body = with_error_handling{ get_body(pages) }
   end
 

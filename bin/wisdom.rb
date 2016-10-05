@@ -63,6 +63,7 @@ rescue => exception
 end
 
 def get_pdfs_in_mongo mongo
+  #get pdfs already in mongo
   mongo.get_all_docs_by :filename
 end
 
@@ -73,7 +74,7 @@ def process
   pdf_directories.each do |dir|
     path = MAIN_DIR + dir + "/"
     pdf_files = get_files(path) - pdfs_in_mongo
-    Log.info "all files in mongo" if pdf_files.size <= 0
+    LOG.info "all files in mongo" if pdf_files.size <= 0
     pdf_files.each do |file|
       pdf = PDFInterface.new(path + file)
       pdf.process
