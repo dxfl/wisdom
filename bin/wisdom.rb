@@ -44,7 +44,6 @@ end
 
 def get_directories directory
   dir_list = delete_dots Dir.entries(directory)
-  #dir_list.select{ |dir| Dir.exist?(dir)}
 end
 
 def get_files folder
@@ -63,12 +62,18 @@ rescue => exception
   post
 end
 
+def get_pdfs_in_mongo mongo
+  mongo.get_all_docs_by :filename
+end
+
 def process
   mongo = MongoInterface.new("arxiv", COLLECTION_NAME)
+  pdfs_in_mongo = get_pdfs_in_mongo mongo
   pdf_directories = get_directories MAIN_DIR
   pdf_directories.each do |dir|
     path = MAIN_DIR + dir + "/"
-    pdf_files = get_files path
+    pdf_files = get_files(path) - pdfs_in_mongo
+    Log.info "all files in mongo" if pdf_files.size <= 0
     pdf_files.each do |file|
       pdf = PDFInterface.new(path + file)
       pdf.process
