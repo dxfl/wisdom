@@ -10,23 +10,27 @@ class PDFInterface
     @filename = filename
   end
 
+  def with_error_handling
+    yield
+  rescue => exception
+    "PDF_Error: #{exception.message}"
+  end
+  
   def get_reader
     PDF::Reader.new(@filename)
-  rescue => exception
-    exception.message
   end
   
   def process
-    reader = get_reader
-    reader.class == PDF::Reader ? get_info(reader.pages) : @title = "PDF_Error: #{reader}"
+    reader = with_error_handling{ get_reader }
+    reader.class == PDF::Reader ? get_info(reader.pages) : @title = reader
   end
 
   def get_info pages
     page0 = pages[0]
-    @title = get_title page0
+    @title = with_error_handling{ get_title(page0) }
     @authors = "unknown"
-    @abstract = get_abstract page0.text[0..3000]
-    @body = get_body pages
+    @abstract = with_error_handling{ get_abstract page0.text[0..3000] }
+    @body = with_error_handling{ get_body(pages) }
   end
 
   def get_title page0
@@ -49,8 +53,6 @@ class PDFInterface
 
   def get_body pages
     pages.map{ |pag| pag.text }.reduce{ |sum, val| sum + val }
-  rescue => exception
-    "PDF_Error: #{exception.message}"
   end
 end
 

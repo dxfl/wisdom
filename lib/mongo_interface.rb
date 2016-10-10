@@ -2,6 +2,8 @@ require 'mongo'
 
 class MongoInterface
 
+  MaxBSONSize = 16777216
+    
   def initialize(dbname, collectionname)
     @dbname = dbname
     @collectionname = collectionname
@@ -18,4 +20,7 @@ class MongoInterface
     @collection.insert_many posts
   end
 
+  def get_all_docs_by field
+    @collection.find.map{ |doc| doc[field]}
+  end
 end
