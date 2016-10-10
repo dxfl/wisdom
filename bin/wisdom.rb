@@ -51,11 +51,12 @@ def get_files folder
 end
 
 def check_post post
-  post_size= post.map{ |_, value| value.size }.reduce(:+)
+  post_size = post.map{ |_, value| value.size }.reduce(:+)
   if post_size >= MongoInterface::MaxBSONSize
-    max_size = MongoInterface::MaxBSONSize - post_size + post[:body].size - 1
-    post[:body] = post[:body][0..max_size]
+    max_size = MongoInterface::MaxBSONSize - post_size - 10000 #10k max size for the rest of fields?
+    post[:body] = post[:body][0...max_size]
   end
+  LOG.debug "post size = #{post_size}"
   post
 rescue => exception
   post[:body] = "PDF_Error: #{exception.message}"
@@ -67,6 +68,23 @@ def get_pdfs_in_mongo mongo
   mongo.get_all_docs_by :filename
 end
 
+def extract_pdf(path, file)
+  pdf = PDFInterface.new(path + file)
+  pdf.process
+  post = {filename: file, #pdf.filename includes path
+          title: pdf.title,
+          authors: pdf.authors,
+          abstract: pdf.abstract,
+          body: pdf.body}
+  [check_post(post)]
+end
+
+def with_error_handling
+  yield
+rescue => exception
+  LOG.debug "PDF_Error: #{exception.message}"
+end  
+
 def process
   mongo = MongoInterface.new("arxiv", COLLECTION_NAME)
   pdfs_in_mongo = get_pdfs_in_mongo mongo
@@ -74,25 +92,14 @@ def process
   pdf_directories.each do |dir|
     path = MAIN_DIR + dir + "/"
     pdf_files = get_files(path) - pdfs_in_mongo
-    LOG.info "all files in mongo" if pdf_files.size <= 0
+    LOG.info "Dir #{path} has all files processed (already in mongo)" if pdf_files.size <= 0
     pdf_files.each do |file|
-      pdf = PDFInterface.new(path + file)
-      pdf.process
-      post = {filename: file, #pdf.filename includes path
-                title: pdf.title,
-                authors: pdf.authors,
-                abstract: pdf.abstract,
-                body: pdf.body}
-      check_post post
-      posts = [post]
-      mongo.save posts
-      LOG.info "Processed paper: #{pdf.filename}"
+      posts = extract_pdf(path, file)      
+      with_error_handling{ mongo.save(posts) }
+      LOG.info "Processed paper: #{file}"
     end
   end
 end
 
 
 process
-
-
-
