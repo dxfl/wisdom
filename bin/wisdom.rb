@@ -43,12 +43,14 @@ def delete_dots list
 end
 
 def get_directories directory
-  dir_list = delete_dots Dir.entries(directory)
+  delete_dots Dir.entries(directory)
 end
 
-def get_files folder
-  delete_dots Dir.entries(folder)
-end
+alias get_files get_directories
+
+#def get_files folder
+#  delete_dots Dir.entries(folder)
+#end
 
 def check_post post
   post_size = post.map{ |_, value| value.size }.reduce(:+)
