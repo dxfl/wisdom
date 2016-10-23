@@ -1,6 +1,7 @@
 
 require_relative 'pdf_interface'
 require_relative 'mongo_interface'
+require 'thread'
 require 'logger'
 
 LOG = Logger.new($stderr)
@@ -82,7 +83,7 @@ class Wisdom
   end  
 
   def get_files_to_process
-    pdf_files = []
+    pdf_files = Queue.new
     pdfs_in_mongo = get_pdfs_in_mongo
     get_directories(@main_dir).each do |dir|
       path = @main_dir + dir + "/"
@@ -92,12 +93,29 @@ class Wisdom
     pdf_files 
   end
 
-  def process pdf_files
+  def process_old pdf_files
     pdf_files.each do |file|
       posts = extract_pdf(file)      
       with_error_handling{ @mongo.save(posts) }
       LOG.info "Processed paper: #{file.filename}"
     end
+  end
+
+  def process pdf_files
+    threads = []
+    1.upto(4) do |n|
+      threads << Thread.new do
+        loop do
+          file = pdf_files.shift
+          posts = extract_pdf(file)
+          with_error_handling{ @mongo.save(posts) }
+          LOG.info "Processed paper: #{file.filename}"
+          break if pdf_files.empty?
+        end
+      end
+      Thread.pass
+    end
+    threads.each(&:join)
   end
   
   def init
