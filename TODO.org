@@ -1,0 +1,31 @@
+
+* DONE add program that controls all
+  CLOSED: [2016-09-22 Thu 13:05]
+maybe is the real wisdom.rb and the actual wisdom is more a pdf_interface class
+the program should [/]:
+  - [X] get all the pdf folders
+  - [X] folder.each get pdf_list
+  - [X] pdf_list.each process pdf, get title, authors, abstract, filename
+  - [X] save extracted pdf to mongo
+
+* DONE clean up code
+  CLOSED: [2016-10-10 Mon 12:52]
+* DONE check mongo for already processed pdf papers
+  CLOSED: [2016-10-05 Wed 11:19]
+* DONE add with_error_handling method, from Avdi, rubytapas
+  CLOSED: [2016-10-05 Wed 11:20]
+* DONE add pdf_file struct, so it's easier to handle
+  CLOSED: [2016-10-23 Sun 09:41]
+queue = Queue.new
+#+BEGIN_SRC ruby
+Pdf = Struct.new(:filename, :path) do 
+  def to_s
+    "#{:path + :filename}"
+  end
+end
+#+END_SRC
+
+
+* DONE split wisdom into bin & lib files
+  CLOSED: [2016-10-23 Sun 09:41]
+* TODO move to threads
