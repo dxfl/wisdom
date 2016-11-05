@@ -28,7 +28,7 @@ end
 * DONE split wisdom into bin & lib files
   CLOSED: [2016-10-23 Sun 09:41]
 * TODO move to threads
-
+* TODO test in jruby & rubinius
 
 * benchmark
 ** wave server 1 core
